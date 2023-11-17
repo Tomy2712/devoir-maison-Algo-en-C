@@ -1,0 +1,1 @@
+m> gcc dm.c -Wall -o prog && ./prog.exe
