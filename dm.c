@@ -86,14 +86,18 @@ void affiche_expression(expression exp) {
     affiche_terme(exp, true);
 }
 
-float evaluate_expression(expression exp, float valeurDeX) {
+// TODO --> verif sir sous enfant gauche droite (en fonction de bin ou non) --> faire calcul & remonter resultat 
+//          si solo juste pow / racine 
+//          obliger de faire 50 cases avec - + * / etc...
+
+char* evaluate_expression(expression exp, float valeurDeX) {
     if(exp == NULL) 
         return 0;
-    float gauche = evaluate_expression(exp->gauche, valeurDeX);
-    float droit = evaluate_expression(exp->droit, valeurDeX);
+    char* gauche = evaluate_expression(exp->gauche, valeurDeX);
+    char* droit = evaluate_expression(exp->droit, valeurDeX);
     if(exp->categorie == 'b' || exp->categorie == 'c') {
-        return exp->valeur;
-    }
+        return "-_-";
+    } 
 }
 
 void free_expression(expression exp) {
@@ -106,13 +110,18 @@ void free_expression(expression exp) {
 
 int main(int argc, char** argv) {
     expression e0 = op_binaire('*', coefficient(5), variable());
-    printf("Expression : ");
+    printf("Expression e0 : ");
     affiche_expression(e0);
     free_expression(e0);
     printf("\n");
     expression e1 = op_binaire('*', op_binaire('+', op_binaire('*', coefficient(3), variable()), coefficient(1)), op_binaire('+', variable(), coefficient(2)));
+    printf("Expression e1 : ");
     affiche_expression(e1);
     free_expression(e1);
-
+    printf("\nModif : ");
+    evaluate_expression(e1,2.2);
+    printf("erujygoeurg\n");
+    //affiche_expression(e1);
+    //free_expression(e1);
     return EXIT_SUCCESS;
 }
