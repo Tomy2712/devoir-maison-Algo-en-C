@@ -1,1 +1,1 @@
-m> gcc dm.c -Wall -o prog && ./prog
+gcc dm.c -lm -o /build/out 
