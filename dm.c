@@ -90,14 +90,33 @@ void affiche_expression(expression exp) {
 //          si solo juste pow / racine 
 //          obliger de faire 50 cases avec - + * / etc...
 
-char* evaluate_expression(expression exp, float valeurDeX) {
+float evaluate_expression(expression exp, float valeurDeX) {
     if(exp == NULL) 
-        return 0;
-    char* gauche = evaluate_expression(exp->gauche, valeurDeX);
-    char* droit = evaluate_expression(exp->droit, valeurDeX);
-    if(exp->categorie == 'b' || exp->categorie == 'c') {
-        return "-_-";
-    } 
+        return 0.0;
+    switch (exp->categorie)
+    {
+    case 'v':
+        return valeurDeX; 
+    case 'c': 
+        return (float)exp->valeur; 
+    case 'u':
+        if (exp->valeur == '-') return -(evaluate_expression(exp->gauche, valeurDeX)); 
+        return 0.0; 
+    case 'b': 
+        switch (exp->valeur)
+        {
+        case '+':
+            return evaluate_expression(exp->gauche, valeurDeX) + evaluate_expression(exp->droit, valeurDeX);      
+        case '-':
+            return evaluate_expression(exp->gauche, valeurDeX) - evaluate_expression(exp->droit, valeurDeX);    
+        case '*':
+            return evaluate_expression(exp->gauche, valeurDeX) * evaluate_expression(exp->droit, valeurDeX);    
+        case '^':
+            return pow(evaluate_expression(exp->gauche, valeurDeX),evaluate_expression(exp->droit, valeurDeX));    
+        case '/':
+            return evaluate_expression(exp->gauche, valeurDeX) / evaluate_expression(exp->droit, valeurDeX);    
+        }
+    }
 }
 
 void free_expression(expression exp) {
@@ -109,19 +128,32 @@ void free_expression(expression exp) {
 }
 
 int main(int argc, char** argv) {
+
+    /*E0*/
     expression e0 = op_binaire('*', coefficient(5), variable());
     printf("Expression e0 : ");
     affiche_expression(e0);
     free_expression(e0);
     printf("\n");
+
+    /*E1*/
     expression e1 = op_binaire('*', op_binaire('+', op_binaire('*', coefficient(3), variable()), coefficient(1)), op_binaire('+', variable(), coefficient(2)));
     printf("Expression e1 : ");
     affiche_expression(e1);
+    
+
+    float res = evaluate_expression(e1,2.2);
+    printf("res : %f\n", res); 
+
     free_expression(e1);
-    printf("\nModif : ");
-    evaluate_expression(e1,2.2);
-    printf("erujygoeurg\n");
-    //affiche_expression(e1);
-    //free_expression(e1);
+
+    printf("\nE2 : \n\n");
+
+    expression e2 = op_unaire('-', op_binaire('+',op_binaire('*', coefficient(3), variable()), coefficient(1))); 
+    affiche_expression(e2); 
+
+    float resE2 = evaluate_expression(e2,2.2); 
+    printf("\nres : %f\n", resE2); 
+
     return EXIT_SUCCESS;
 }
