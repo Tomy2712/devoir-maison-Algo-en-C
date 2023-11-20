@@ -70,10 +70,12 @@ void affiche_terme(expression exp, bool premier) {
         pd = true;
     }
 
+    if(exp->categorie == 'u')
+        printf("%c", exp->valeur);
     affiche_terme(exp->gauche, false);
     if(exp->categorie=='c')
         printf("%d", exp->valeur);
-    else
+    else if(exp->categorie!='u')
         printf("%c", exp->valeur);
 
     affiche_terme(exp->droit, false);
@@ -93,8 +95,7 @@ void affiche_expression(expression exp) {
 float evaluate_expression(expression exp, float valeurDeX) {
     if(exp == NULL) 
         return 0.0;
-    switch (exp->categorie)
-    {
+    switch (exp->categorie) {
     case 'v':
         return valeurDeX; 
     case 'c': 
@@ -103,18 +104,17 @@ float evaluate_expression(expression exp, float valeurDeX) {
         if (exp->valeur == '-') return -(evaluate_expression(exp->gauche, valeurDeX)); 
         return 0.0; 
     case 'b': 
-        switch (exp->valeur)
-        {
+        switch (exp->valeur) {
         case '+':
-            return evaluate_expression(exp->gauche, valeurDeX) + evaluate_expression(exp->droit, valeurDeX);      
+            return evaluate_expression(exp->gauche, valeurDeX) + evaluate_expression(exp->droit, valeurDeX);
         case '-':
-            return evaluate_expression(exp->gauche, valeurDeX) - evaluate_expression(exp->droit, valeurDeX);    
+            return evaluate_expression(exp->gauche, valeurDeX) - evaluate_expression(exp->droit, valeurDeX);
         case '*':
-            return evaluate_expression(exp->gauche, valeurDeX) * evaluate_expression(exp->droit, valeurDeX);    
+            return evaluate_expression(exp->gauche, valeurDeX) * evaluate_expression(exp->droit, valeurDeX);
         case '^':
-            return pow(evaluate_expression(exp->gauche, valeurDeX),evaluate_expression(exp->droit, valeurDeX));    
+            return pow(evaluate_expression(exp->gauche, valeurDeX),evaluate_expression(exp->droit, valeurDeX));
         case '/':
-            return evaluate_expression(exp->gauche, valeurDeX) / evaluate_expression(exp->droit, valeurDeX);    
+            return evaluate_expression(exp->gauche, valeurDeX) / evaluate_expression(exp->droit, valeurDeX);
         }
     }
 }
@@ -128,7 +128,6 @@ void free_expression(expression exp) {
 }
 
 int main(int argc, char** argv) {
-
     /*E0*/
     expression e0 = op_binaire('*', coefficient(5), variable());
     printf("Expression e0 : ");
@@ -140,20 +139,19 @@ int main(int argc, char** argv) {
     expression e1 = op_binaire('*', op_binaire('+', op_binaire('*', coefficient(3), variable()), coefficient(1)), op_binaire('+', variable(), coefficient(2)));
     printf("Expression e1 : ");
     affiche_expression(e1);
-    
 
-    float res = evaluate_expression(e1,2.2);
-    printf("res : %f\n", res); 
-
+    float res1 = evaluate_expression(e1,2.2);
+    printf("\nres(x=2.2) : %f", res1); 
     free_expression(e1);
+    printf("\n");
 
-    printf("\nE2 : \n\n");
-
-    expression e2 = op_unaire('-', op_binaire('+',op_binaire('*', coefficient(3), variable()), coefficient(1))); 
+    /*E2*/
+    expression e2 = op_unaire('-', op_binaire('+',op_binaire('*', coefficient(3), variable()), coefficient(1)));
+    printf("Expression e2 : ");
     affiche_expression(e2); 
-
-    float resE2 = evaluate_expression(e2,2.2); 
-    printf("\nres : %f\n", resE2); 
-
+    
+    float res2 = evaluate_expression(e2,2.2); 
+    printf("\nres2 : %f", res2); 
+    printf("\n");
     return EXIT_SUCCESS;
 }
