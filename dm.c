@@ -129,7 +129,6 @@ void free_expression(expression exp) {
 
 expression derivee(expression exp) {
     if (exp == NULL) return NULL; 
-    expression res = malloc(sizeof(noeud));
     switch (exp->categorie)
     {
     case 'b':
@@ -137,18 +136,17 @@ expression derivee(expression exp) {
         {
         case '+':
         case '-':
-            res = op_binaire(exp->valeur, derivee(exp->gauche), derivee(exp->droit)); 
+            return op_binaire(exp->valeur, derivee(exp->gauche), derivee(exp->droit)); 
         case '*': 
-            res = op_binaire('+', op_binaire('*', derivee(exp->gauche), exp->droit),op_binaire('*', exp->gauche, derivee(exp->droit)));
+            return op_binaire('+', op_binaire('*', derivee(exp->gauche), exp->droit),op_binaire('*', exp->gauche, derivee(exp->droit)));
         } 
     case 'u':
         /*useless*/
     case 'v':
-        res = coefficient(1); 
+        return coefficient(1); 
     case 'c': 
-        res = coefficient(0); 
+        return coefficient(0); 
     }
-    return res;
 }
 
 int main(int argc, char** argv) {
