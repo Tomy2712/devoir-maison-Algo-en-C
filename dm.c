@@ -69,11 +69,13 @@ void affiche_terme(expression exp, bool premier) {
         printf("(");
         pd = true;
     }
+    if(exp->categorie == 'u')
+        printf("%c", exp->valeur);
 
     affiche_terme(exp->gauche, false);
     if(exp->categorie=='c')
         printf("%d", exp->valeur);
-    else
+    else if(exp->categorie!='u')
         printf("%c", exp->valeur);
 
     affiche_terme(exp->droit, false);
@@ -141,7 +143,7 @@ expression derivee(expression exp) {
             return op_binaire('+', op_binaire('*', derivee(exp->gauche), exp->droit),op_binaire('*', exp->gauche, derivee(exp->droit)));
         } 
     case 'u':
-        /*useless*/
+        if(exp->valeur == '-') return op_unaire('-', derivee(exp->gauche));
     case 'v':
         return coefficient(1); 
     case 'c': 
@@ -155,7 +157,7 @@ int main(int argc, char** argv) {
     expression e0 = op_binaire('*', coefficient(5), variable());
     expression e1 = op_binaire('*', op_binaire('+', op_binaire('*', coefficient(3), variable()), coefficient(1)), op_binaire('+', variable(), coefficient(2)));
 
-    expression outE0 = derivee(e0); 
+    expression outE0 = derivee(op_unaire('-', e0)); 
     printf("\n RES : "); 
     affiche_expression(outE0);
 
